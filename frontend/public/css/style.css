@@ -1,0 +1,10 @@
+body { font-family: Arial, sans-serif; margin: 20px; }
+.login-container { max-width: 360px; margin: 40px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+input { display:block; width:100%; margin:8px 0; padding:8px; }
+button { padding:8px 12px; }
+header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.results { display:flex; flex-wrap:wrap; gap:12px; }
+.card { border:1px solid #ddd; padding:8px; width:150px; text-align:center; border-radius:8px; }
+#suggestions { position:absolute; background:white; border:1px solid #ddd; max-height:200px; overflow:auto; width:300px; }
+.suggestion { padding:8px; cursor:pointer; }
+.suggestion:hover { background:#f0f0f0; }

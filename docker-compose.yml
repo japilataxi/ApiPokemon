@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    container_name: poke-postgres
+    environment:
+      POSTGRES_DB: pokedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/src/models/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432" # si quieres conectar desde VSCode/pgAdmin -> deja esto en dev
+  backend:
+    build: ./backend
+    container_name: poke-backend
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/pokedb
+      JWT_SECRET: supersecret_change_me
+      PORT: 4000
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/usr/src/app
+  frontend:
+    build: ./frontend
+    container_name: poke-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html:ro
+volumes:
+  pgdata:

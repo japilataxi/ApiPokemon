@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Login Pokémon</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="login-container">
+    <h1>Iniciar sesión</h1>
+    <form id="loginForm">
+      <input id="username" placeholder="Usuario" required />
+      <input id="password" placeholder="Contraseña" type="password" required />
+      <button type="submit">Entrar</button>
+    </form>
+    <p>o <a href="#" id="goRegister">Registrar</a></p>
+
+    <div id="register" style="display:none;">
+      <h2>Registrar</h2>
+      <form id="regForm">
+        <input id="r_username" placeholder="Usuario" required />
+        <input id="r_password" placeholder="Contraseña" type="password" required />
+        <button type="submit">Registrar</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API = location.origin.startsWith('http') && location.hostname === 'localhost' ? 'http://localhost:4000' : (localStorage.getItem('API_URL') || '/api');
+    document.getElementById('loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const r = await fetch(API + '/auth/login', {
+        method: 'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({username,password})
+      });
+      const data = await r.json();
+      if (r.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('username', data.username);
+        location.href = '/app.html';
+      } else alert(data.error || 'Login failed');
+    });
+
+    document.getElementById('goRegister').addEventListener('click', e=>{
+      e.preventDefault();
+      document.getElementById('register').style.display='block';
+    });
+    document.getElementById('regForm').addEventListener('submit', async e=>{
+      e.preventDefault();
+      const username = document.getElementById('r_username').value;
+      const password = document.getElementById('r_password').value;
+      const r = await fetch(API + '/auth/register', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({username,password})
+      });
+      const d = await r.json();
+      if(r.ok) { alert('Registrado. Haz login.'); document.getElementById('register').style.display='none'; }
+      else alert(d.error || 'Error');
+    });
+  </script>
+</body>
+</html>
